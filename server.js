@@ -82,12 +82,6 @@ app.post('/upload', function (req, res) {
 
     print(req.body);
 
-    //console.log('\r\n\r\nreq.files');
-    //console.log(req.files);
-    //console.log('req.files.nomeArquivo');
-    //console.log(req.files.nomeArquivo);
-    //console.log('\r\n\r\n');
-
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
     let sampleFile = req.files.nomeArquivo;
 
@@ -114,17 +108,10 @@ app.post('/upload', function (req, res) {
     async
         .series([
             function salvarImagem(callback) {
-                // Use the mv() method to place the file somewhere on your server 
-
-                //console.log('\r\n**** __dirname');
-                //console.log(__dirname);
-                //console.log('\r\n**** sampleFile.name');
-                //console.log(sampleFile.name);
 
                 if (temArquivo) {
                     nomeArquivoUpload = path.join(__dirname, '//public//uploads//', sampleFile.name);
-                    //console.log('caminho');
-                    //console.log(caminho);
+
                     sampleFile.mv(nomeArquivoUpload, function (err) {
                         if (err) console.log(err);
 
@@ -147,8 +134,6 @@ app.post('/upload', function (req, res) {
                     var objeto = { nomeFruta: nomeFruta, descricao: descricaoDica, nomeArquivo: nomeArquivo, hash: guid };
                     Dica.create(objeto).then(function (dica) {
 
-                        //comeco obter nome Arquivo
-                        //                        var nomeArquivoPad = ;
                         var nomeArquivoPadTipo = String("00000" + dica.idDica).slice(-6) + tipo;
                         nomeFinal = nomePastaUpload + '\\' + nomeArquivoPadTipo;
 
@@ -192,15 +177,7 @@ app.post('/upload', function (req, res) {
                     Dica
                         .update(objeto, { where: { idDica: idDica } })
                         .then(function (dica) {
-                            //console.log('**** UPSERT ');
-                            //console.log('**** dica');
-                            //console.log(JSON.stringify(dica));
-                            //console.log(dica);
-                            //console.log('**** nomeArquivoUpload');
-                            //console.log(nomeArquivoUpload);
-                            //console.log('**** nomePastaUpload');
-                            //console.log(nomePastaUpload);
-                            //console.log('**** nomeFinal');
+                            
                             nomeFinal = nomePastaUpload + '\\' + nomeArquivo;
                             //console.log(nomeFinal); 
 
@@ -247,22 +224,6 @@ function print(obj) {
 
 app.post('/upload2', function (req, res) {
 
-    // var cache = [];
-    // var req2 = JSON.stringify(req, function (key, value) {
-    //     if (typeof value === 'object' && value !== null) {
-    //         if (cache.indexOf(value) !== -1) {
-    //             // Circular reference found, discard key
-    //             return;
-    //         }
-    //         // Store value in our collection
-    //         cache.push(value);
-    //     }
-    //     return value;
-    // });
-    // cache = null; // Enable garbage collection
-    // console.log('\r\n\r\n req2');
-    // console.log(req2);
-
     // create an incoming form object
     var form = new formidable.IncomingForm();
 
@@ -271,30 +232,8 @@ app.post('/upload2', function (req, res) {
 
     // store all uploads in the /uploads directory
     form.uploadDir = path.join(__dirname, '/public/uploads');
-
-    //var nomeArquivoUpload = "";
-    //var nomePastaUpload = "";
-
-    // every time a file has been uploaded successfully,
-    // rename it to it's orignal name
-    //form.on('fileBegin', function(name, file) {
-    //var nome = createUUID();
-    //console.log('var nome = createUUID();');
-    //console.log(nome);
-    //file.name = nome;
-    //});
-
+    
     form.on('file', function (field, file) {
-        //console.log('FORM ON > file.path ' + file.path);
-        //console.log('FORM ON > file.uploadDir ' + file.uploadDir);
-
-        //tipo = file.type == 'image/png' ? '.png' : file.type == 'image/jpeg' ? '.jpg' : file.type == 'image/jpg' ? '.jpg' : "";
-        //nomeArquivoUpload = file.path;
-        //nomePastaUpload = form.uploadDir;
-
-        //console.log('FORM ON > nomeArquivoUpload ' + nomeArquivoUpload);
-        //console.log('FORM ON > nomePastaUpload ' + nomePastaUpload);
-
         fs.rename(file.path, path.join(form.uploadDir, file.name));
     });
 
@@ -309,97 +248,6 @@ app.post('/upload2', function (req, res) {
     });
 
     form.parse(req);
-
-    //var idDica = 0;
-    //var nomeFruta = "";
-    //var descricaoDica = "";
-    //var nomeArquivo = "";
-    //var tipo = "";
-    /*
-        async
-            .series([
-                function parse(callback) {
-                    form.parse(req, function (err, fields, files) {
-                        nomeFruta = fields.nomeFruta;
-                        descricaoDica = fields.descricao;
-                        idDica = fields.idDica;
-                        callback();
-                    });
-                },
-                function salvar(callback) {
-                    nomeArquivo = nomeFruta.toLowerCase() + tipo;
-                    var cadastrar = idDica == 0;
-    
-                    if (cadastrar) {
-                        var objeto = { nomeFruta: nomeFruta, descricao: descricaoDica, nomeArquivo: nomeArquivo };
-                        Dica.create(objeto).then(function (dica) {
-                            //var dicaCriada = JSON.stringify(dica);
-    
-                            console.log('****!! dica');
-                            console.log(JSON.stringify(dica));
-    
-                            var nomeArquivoPad = String("00000" + dica.idDica).slice(-6);
-    
-                            console.log('****%% nomeArquivoPad');
-                            console.log(nomeArquivoPad);
-    
-                            var nomeArquivoPadTipo = nomeArquivoPad + tipo;
-                            var nomeFinal = nomePastaUpload + '\\' + nomeArquivoPadTipo;
-                            console.log('');console.log('');console.log('');console.log('');console.log('');
-                            console.log('*$$$$$$$ nomeArquivoUpload');
-                            console.log(nomeArquivoUpload);
-                            fs.rename(nomeArquivoUpload, nomeFinal, function(res){
-                                console.log('callback rename');
-                                console.log(res);
-                            });
-                            //fs.unlink(nomeArquivoUpload, function(res){
-                                //console.log(res);
-                            //});
-    
-                            console.log('**** nomeArquivoPadTipo');
-                            console.log(nomeArquivoPadTipo);
-                            dica.nomeArquivo = nomeArquivoPadTipo;
-    
-                            console.log('**** dica');
-                            console.log(JSON.stringify(dica));
-    
-    
-                            dica
-                                .updateAttributes({ nomeArquivo: nomeArquivoPadTipo })
-                                .then(function () {
-                                    console.log('****!!!!!!!!!!!!!!!!!!!!!!'); callback();
-                                });
-                        });
-                    } else {
-                        var objeto = { idDica: idDica, nomeFruta: nomeFruta, descricao: descricaoDica, nomeArquivo: nomeArquivo };
-    
-                        Dica.upsert(objeto).then(function (dica) {
-                            console.log('**** dica');
-                            console.log(JSON.stringify(dica));
-                            console.log('');console.log('');console.log('');console.log('');console.log('');
-                            console.log('!!** nomeArquivoUpload');
-                            console.log(nomeArquivoUpload);
-                            console.log('!!** nomePastaUpload');
-                            console.log(nomePastaUpload);
-                            console.log('!!** nomeArquivo');
-                            console.log(nomeArquivo);
-                            
-                            fs.renameSync(nomeArquivoUpload, nomePastaUpload + '/' + nomeArquivo);
-                            //fs.unlink()
-                            callback();
-                        });
-                    }
-                }
-            ],
-            function (err) {
-                if (err != null) {
-                    return res.status(500).send(err);
-                }
-    
-                res.redirect('/');
-            });*/
-
-    //res.redirect('/');
 });
 
 app.get('/api/obterdicas', function (req, res) {
@@ -424,10 +272,7 @@ app.post('/api/obterimagem', function (req, res) {
     const fs = require('fs');
     fs.readdir(__dirname + '/public/uploads', (err, files) => {
 
-        //console.log('TODOS OS ARQUIVOS DO DIRETORIO');console.log(files);console.log('');
-
-        //async.series([
-        //  function filesForEach(callback) {
+   
 
         files.forEach(file => {
             //var img = { caminhoArquivo: file };
@@ -435,19 +280,7 @@ app.post('/api/obterimagem', function (req, res) {
             var nomeImg = file.split
             //todasImagens.push(img);
         });
-        //    callback();
-        //},
-        //function retorna(callback) {
-        //   callback();
-        // }
-        //],
-        //   function (err) {
-        //      if (err != null) return res.status(500).send(err);
-        //console.log('todasImagens');
-        //console.log(todasImagens);
-        //console.log('');
-        //     res.json(todasImagens);
-        // });
+        
     });
 });
 
@@ -474,20 +307,7 @@ app.post('/api/deletar', function (req, res) {
 
 });
 
-// app.post('/api/deletar', function (req, res) {
-//     console.log('\r\n\r\n********      deletar dica         ********');
 
-//     var idDica = req.body.idDica;
-//     console.log('idDica: ' + idDica);
-
-//     Dica
-//         .destroy({ where: { idDica: idDica } })
-//         .then(function () {
-//             //req.session.valid = true;
-//             res.redirect('/');
-//         });
-
-// });
 
 app.post('/api/obterdica', function (req, res) {
     console.log('********      obterdica         ********');
@@ -521,17 +341,12 @@ app.get('/fetch', function (req, res) {
 });
 
 app.get('/api/imagens', function (req, res) {
-    //console.log(' - - - - - - - - imagens - - - - - - - - ');
-
-    //console.log('__dirname');
-    //console.log(__dirname);
 
     var todasImagens = [];
 
     const fs = require('fs');
     fs.readdir(__dirname + '/public/uploads', (err, files) => {
 
-        //console.log('TODOS OS ARQUIVOS DO DIRETORIO');console.log(files);console.log('');
 
         async.series([
             function filesForEach(callback) {
@@ -549,9 +364,7 @@ app.get('/api/imagens', function (req, res) {
         ],
             function (err) {
                 if (err != null) return res.status(500).send(err);
-                //console.log('todasImagens');
-                //console.log(todasImagens);
-                //console.log('');
+               
                 res.json(todasImagens);
             });
     });
